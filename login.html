@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Glucose Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 80%;
+            max-width: 300px;
+        }
+        input, select, button {
+            margin: 10px 0;
+            padding: 5px;
+        }
+        #error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Login to Glucose Monitor</h2>
+    <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <select id="region" required>
+            <option value="EU">Europe</option>
+            <option value="US">United States</option>
+        </select>
+        <button type="submit">Login</button>
+    </form>
+    <div id="error"></div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const region = document.getElementById('region').value;
+            ipcRenderer.send('login', { email, password, region });
+        });
+
+        ipcRenderer.on('loginError', (event, errorMessage) => {
+            document.getElementById('error').innerText = errorMessage;
+        });
+    </script>
+</body>
+</html>
